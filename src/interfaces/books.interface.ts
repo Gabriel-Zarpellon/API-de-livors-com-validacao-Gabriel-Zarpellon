@@ -1,22 +1,22 @@
 import { Request, Response } from "express";
+import { AnyZodObject, z } from "zod";
+import {
+  addBookBodySchema,
+  bookSchema,
+  updateBookBodySchema,
+} from "../schemas/books.schema";
 
-export interface iBook {
-  id: number;
-  name: string;
-  pages: number;
-  category?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+export type tBook = z.infer<typeof bookSchema>;
 
-export type tAddBook = Pick<iBook, "name" | "pages" | "category">;
-export type tUpdateBook = Partial<tAddBook>;
+export type tAddBook = z.infer<typeof addBookBodySchema>;
+
+export type tUpdateBook = z.infer<typeof updateBookBodySchema>;
 
 export interface iBooksServices {
-  addBook(body: tAddBook): iBook;
-  getBooks(): iBook[];
-  getBook(id: string): iBook;
-  updateBook(id: string, body: tUpdateBook): iBook;
+  addBook(body: tAddBook): tBook;
+  getBooks(search?: string): tBook[];
+  getBook(id: string): tBook;
+  updateBook(id: string, body: tUpdateBook): tBook;
   deleteBook(id: string): void;
 }
 
@@ -26,4 +26,10 @@ export interface iBooksControllers {
   getBook(req: Request, res: Response): Response;
   updateBook(req: Request, res: Response): Response;
   deleteBook(req: Request, res: Response): Response;
+}
+
+export interface iRequestSchemas {
+  params?: AnyZodObject;
+  body?: AnyZodObject;
+  query?: AnyZodObject;
 }
