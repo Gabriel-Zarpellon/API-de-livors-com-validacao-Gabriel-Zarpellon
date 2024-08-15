@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { iBooksControllers } from "../interfaces/books.interface";
 import { BooksServices } from "../services/books.services";
-import { booksDatabase } from "../database/database";
 
 export class BooksControllers implements iBooksControllers {
   addBook(req: Request, res: Response): Response {
@@ -13,7 +12,12 @@ export class BooksControllers implements iBooksControllers {
   }
 
   getBooks(req: Request, res: Response): Response {
-    return res.status(200).json(booksDatabase);
+    const search = req.query.search;
+    const bookServices = new BooksServices();
+
+    const response = bookServices.getBooks(search as string);
+
+    return res.status(200).json(response);
   }
 
   getBook(req: Request, res: Response): Response {

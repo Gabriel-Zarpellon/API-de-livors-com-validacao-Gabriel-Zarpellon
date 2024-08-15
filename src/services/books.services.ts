@@ -1,16 +1,16 @@
 import { booksDatabase, setId } from "../database/database";
 import {
-  iBook,
   iBooksServices,
   tAddBook,
+  tBook,
   tUpdateBook,
 } from "../interfaces/books.interface";
 
 export class BooksServices implements iBooksServices {
-  addBook(body: tAddBook): iBook {
+  addBook(body: tAddBook): tBook {
     const date = new Date();
 
-    const book: iBook = {
+    const book: tBook = {
       id: setId(),
       name: body.name,
       pages: body.pages,
@@ -24,17 +24,24 @@ export class BooksServices implements iBooksServices {
     return book;
   }
 
-  getBooks(): iBook[] {
-    return booksDatabase;
+  getBooks(search?: string): tBook[] {
+    if (search) {
+      const bookList = booksDatabase.filter((book) =>
+        book.name.toLowerCase().includes(search?.toLowerCase())
+      );
+      return bookList;
+    } else {
+      return booksDatabase;
+    }
   }
 
-  getBook(id: string): iBook {
-    const book = booksDatabase.find((book) => book.id == Number(id)) as iBook;
+  getBook(id: string): tBook {
+    const book = booksDatabase.find((book) => book.id == Number(id)) as tBook;
 
     return book;
   }
 
-  updateBook(id: string, body: tUpdateBook): iBook {
+  updateBook(id: string, body: tUpdateBook): tBook {
     const date = new Date();
 
     const update = { ...body, updatedAt: date };
